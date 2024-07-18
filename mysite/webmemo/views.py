@@ -1,8 +1,11 @@
 from datetime import datetime, timezone
 from dateutil import tz
 from dataclasses import dataclass, asdict, field
+import csv
 
 from django.shortcuts import render, get_object_or_404, redirect
+from django.http import HttpResponse
+
 from .models import MemoText
 
 JST = tz.gettz("Asia/Tokyo")
@@ -176,3 +179,32 @@ def updateMemo(request, memo_id):
         memo.updated_at = nowtime
         memo.save()
         return "更新しました : " + nowtime.astimezone(JST).isoformat()
+
+
+def csv_download(request):
+    # データベースから抽出したいデータを取得
+    data = MemoText.objects.all()
+
+    # CSVファイルの生成
+    response = HttpResponse(content_type="text/csv")
+    now = datetime.now(timezone.utc)
+    response["Content-Disposition"] = f'attachment; filename="data_{now.date()}.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(
+        ["id", "title", "label", "text", "updated_at", "created_at"]
+    )  # ヘッダー行の書き込み
+
+    for row in data:
+        writer.writerow(
+            [
+                row.id,
+                row.titleName,
+                row.label,
+                row.mainText,
+                row.updated_at,
+                row.created_at,
+            ]
+        )  # データ行の書き込み
+
+    return response

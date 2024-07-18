@@ -22,6 +22,7 @@
       }
     </script>
     <h1>WebMemo</h1>
+    <h2>操作</h2>
     <p><form action="{% url 'webmemo:index' %}" method="post">
         {% csrf_token %}
         <button type="submit" name="webmemo_act" value="add">メモ追加</button></button>
@@ -46,6 +47,9 @@
     <form id="filter_clear_webmemo" action="{% url 'webmemo:index' %}" method="get">
       <input type="submit" value="フィルター条件解除">
     </form>
+    <p>
+      <a href="{% url 'webmemo:csv_download' %}">CSVをダウンロード</a>
+    </p>
     <p>
       <input type="button" value="一番下" onclick="gotoBottom()">
     </p>
