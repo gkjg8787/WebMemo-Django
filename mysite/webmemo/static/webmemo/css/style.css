@@ -1,0 +1,80 @@
+table, td, th {
+	border-collapse: collapse;
+	border: solid 1px black;
+	text-align: center;
+}
+table.memo_list {
+	width:100%;
+}
+table.memo_list th {
+	min-width: 50px;
+	font-size : 16px;
+}
+
+textarea {
+	vertical-align: top;
+}
+textarea.maintext {
+	font-size: 16px;
+	min-width: 180px;
+	min-height: 120px;
+	max-width: 100%;
+	width : 80%;
+}
+
+td.noborder {
+	border: none;
+	border-top: solid 1px black;
+}
+td.id_frame {
+	width : 5%;
+}
+td.title_frame {
+	width : 14%;
+}
+td.label_frame {
+	width : 12%;
+}
+td.text_frame {
+	width : 50%;
+}
+td.update_frame {
+	width : 14%;
+}
+td.btn_frame {
+	width : 5%;
+}
+a.like_button_link {
+	background-color:#eeeeee;
+ 	border:1px solid black;
+	text-decoration: none;
+	font-weight: normal;
+	padding: 2px 5px 2px 5px;
+	color: black;
+	font-size : 14px;
+	cursor:pointer;
+}
+a.like_button_link:hover {
+	color:white;
+	background-color:#dddddd;
+}
+.t_b4s {
+	min-width: 90px;
+	font-size: 14px;
+}
+.t_b2s {
+	min-width: 50px;
+	font-size: 14px;
+}
+.search_word_input {
+	min-width : 240px;
+	width : 60%;
+}
+.title_input {
+	min-width: 240px;
+	width : 80%;
+}
+.label_input {
+	min-width : 240px;
+	width : 80%;
+}

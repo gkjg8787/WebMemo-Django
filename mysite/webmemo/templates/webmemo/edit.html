@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>メモ詳細</title>
+    <link rel="stylesheet" href="{% static 'webmemo/css/style.css' %}" type="text/css">
+    <link rel="icon" href="{% static 'webmemo/icon/favicon.ico' %}">
+  </head>
+  <body>
+    {% if update_msg %}
+    <p>{{ update_msg }}</p><br>
+    {% endif %}
+    <form action="{% url 'webmemo:edit' memo.id %}" method="post" onSubmit="return checkUpSubmit('変更')">
+        {% csrf_token %}
+        <input type="hidden" name="textId" value="{{ memo.id }}">
+        <p>タイトル&ensp;
+          <input type="text" name="titleName" size="30" value="{{ memo.titleName }}" class="title_input">
+        </p>
+        <p>ラベル&ensp;
+          <input type="text" name="label" size="30" value="{{ memo.label }}" class="label_input">
+        </p>
+        <p>内容({{ rows }}行)&ensp;
+          <textarea class="maintext" name="maintext">{{ memo.mainText }}</textarea>
+        </p>
+        <p>作成日時：{{ memo.created_at }}</p>
+        <p>更新日時：{{ memo.updated_at }}</p>
+        <p><br>
+          <input type="submit" value="変更">
+        </p>
+      </form>
+      <p><a href="{% url 'webmemo:index' %}">戻る</a></p><br>
+      <p><form action="{% url 'webmemo:edit' memo.id %}" method="post" onSubmit="return checkUpSubmit('削除')">
+        {% csrf_token %}
+        <input type="hidden" name="memodeltextId" value="{{ memo.id }}">
+        <input type="submit" value="削除">
+        </form>
+      </p>
+      
+      <script type="text/javascript">
+        function checkUpSubmit(actmsg){
+            return confirm("本当に"+actmsg+"しますか？");
+        }
+        var rows = {{ rows }} * 16;
+        var cols = {{ width }} * 16;
+        document.getElementsByClassName('maintext')[0].style.width = cols + 'px';
+        document.getElementsByClassName('maintext')[0].style.height = rows + 'px';
+      </script>
+  </body>
+</html>

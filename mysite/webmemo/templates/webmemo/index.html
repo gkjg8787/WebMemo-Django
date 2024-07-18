@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>Webメモ</title>
+    <link rel="stylesheet" href="{% static 'webmemo/css/style.css' %}" type="text/css">
+    <link rel="icon" href="{% static 'webmemo/icon/favicon.ico' %}">
+  </head>
+  <body>
+    <script>
+      function gotoTop(){
+        window.scroll({
+          top: 0,
+          behavior: "smooth",
+        });
+      }
+      function gotoBottom(){
+        var element = document.documentElement;
+        var bottom = element.scrollHeight - element.clientHeight;
+        window.scroll(0, bottom);
+      }
+    </script>
+    <h1>WebMemo</h1>
+    <p><form action="{% url 'webmemo:index' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" name="webmemo_act" value="add">メモ追加</button></button>
+    </form></p>
+    <p><form id="search_webmemo" action="{% url 'webmemo:index' %}" method="get">
+        <select name="cate">
+          <option value="title" {{ cate.title }}>タイトル</option>
+          <option value="label" {{ cate.label }}>ラベル</option>
+          <option value="memotext" {{ cate.memotext }}>内容</option>
+        </select>
+        <input type="text" name="word" value="{{ search_word }}" class="search_word_input">
+        <input type="submit" value="検索">
+        <div>
+          <select name="sort" onchange="submit(this.form)">
+            <option value="id" {{ sorttype.id }}>登録順</option>
+            <option value="title" {{ sorttype.title }}>タイトル名順</option>
+            <option value="label" {{ sorttype.label }}>ラベル名順</option>
+            <option value="update" {{ sorttype.update }}>更新が新しい順</option>
+          </select>
+        </div>
+    </form></p>
+    <form id="filter_clear_webmemo" action="{% url 'webmemo:index' %}" method="get">
+      <input type="submit" value="フィルター条件解除">
+    </form>
+    <p>
+      <input type="button" value="一番下" onclick="gotoBottom()">
+    </p>
+    <h2>メモ一覧</h2>
+    <table class="memo_list">
+        {% if webmemo_list %}
+        <tr>
+            <th>id</th>
+            <th>タイトル</th>
+            <th>ラベル</th>
+            <th>内容</th>
+            <th>更新時刻</th>
+        </tr>
+        {% for memo in webmemo_list %}
+        <tr>
+            <td class="id_frame">{{ memo.id }}</td>
+            <td class="title_frame">{{ memo.titleName }}</td>
+            <td class="label_frame">{{ memo.label }}</td>
+            <td class="text_frame">{{ memo.mainText }}</td>
+            <td class="update_frame">{{ memo.updated_at }}</td>
+            <td class="noborder btn_frame">
+                <form action="{% url 'webmemo:edit' memo.id %}" method="get">
+                    <button type="submit" class="t_b2s">表示</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <p>メモは登録されていません</p>
+        {% endif %}
+    </table>
+    <p>
+      <input type="button" value="一番上" onclick="gotoTop()">
+    </p>
+  </body>
+</html>
