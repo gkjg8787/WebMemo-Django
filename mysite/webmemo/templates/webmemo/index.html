@@ -36,7 +36,7 @@
         <input type="text" name="word" value="{{ search_word }}" class="search_word_input">
         <input type="submit" value="検索">
         <div>
-          <select name="sort" onchange="submit(this.form)">
+          並び順：<select name="sort" onchange="submit(this.form)">
             <option value="id" {{ sorttype.id }}>登録順</option>
             <option value="title" {{ sorttype.title }}>タイトル名順</option>
             <option value="label" {{ sorttype.label }}>ラベル名順</option>
@@ -48,7 +48,7 @@
       <input type="submit" value="フィルター条件解除">
     </form>
     <p>
-      <a href="{% url 'webmemo:csv_download' %}">CSVをダウンロード</a>
+      <a href="{% url 'webmemo:csv_download' %}">CSVでダウンロード</a>
     </p>
     <p>
       <input type="button" value="一番下" onclick="gotoBottom()">
@@ -72,7 +72,7 @@
             <td class="update_frame">{{ memo.updated_at }}</td>
             <td class="noborder btn_frame">
                 <form action="{% url 'webmemo:edit' memo.id %}" method="get">
-                    <button type="submit" class="t_b2s">表示</button>
+                    <button type="submit" class="t_b2s">編集</button>
                 </form>
             </td>
         </tr>
