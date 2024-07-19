@@ -27,6 +27,9 @@
         {% csrf_token %}
         <button type="submit" name="webmemo_act" value="add">メモ追加</button></button>
     </form></p>
+    <form action="{% url 'webmemo:csv_upload' %}" method="get">
+      <input type="submit" value="ファイルで追加">
+    </form>
     <p><form id="search_webmemo" action="{% url 'webmemo:index' %}" method="get">
         <select name="cate">
           <option value="title" {{ cate.title }}>タイトル</option>

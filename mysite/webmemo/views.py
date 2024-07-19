@@ -1,12 +1,14 @@
 from datetime import datetime, timezone
-from dateutil import tz
 from dataclasses import dataclass, asdict, field
 import csv
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
+from dateutil import tz
+from dateutil import parser
 
 from .models import MemoText
+from .forms import CSVUploadForm
 
 JST = tz.gettz("Asia/Tokyo")
 
@@ -208,3 +210,71 @@ def csv_download(request):
         )  # データ行の書き込み
 
     return response
+
+
+def csv_upload(request):
+    if request.method == "POST":
+        # アップロードされたファイルを取得
+        form = CSVUploadForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            # CSVファイルの処理
+            csv_file = request.FILES["csv_file"]
+            csv_reader = csv.reader(csv_file.read().decode().splitlines())
+
+            # ヘッダー行を除外
+            next(csv_reader)
+
+            # 各行を処理
+            messages: list[str] = ["1行目　ヘッダーをスキップします。"]
+            header_margin = 2
+            add_data: dict[int, dict] = {}
+            bad_data: dict[int, str] = {}
+            for row_idx, row in enumerate(csv_reader):
+                if len(row) == 5:
+                    # データを生成
+                    data = {
+                        "titleName": row[0],
+                        "label": row[1],
+                        "mainText": row[2],
+                        "created_at": parser.parse(row[3]),
+                        "updated_at": parser.parse(row[4]),
+                    }
+                    add_data[row_idx + header_margin] = data
+                    continue
+                elif len(row) == 6:
+                    data = {
+                        "titleName": row[1],
+                        "label": row[2],
+                        "mainText": row[3],
+                        "created_at": parser.parse(row[4]),
+                        "updated_at": parser.parse(row[5]),
+                    }
+                    add_data[row_idx + header_margin] = data
+                    continue
+                else:
+                    bad_data[row_idx + header_margin] = "フォーマットが違います。"
+            if not bad_data:
+                for idx, data in add_data.items():
+                    # DBに保存
+                    messages.append(
+                        f"{idx}行目　{data['titleName']}, {data['label']}, を追加します。"
+                    )
+                    MemoText.objects.create(**data)
+                if len(add_data):
+                    messages.append("CSVファイルをアップロードしました。")
+                else:
+                    messages.append("有効なデータがありません。")
+            else:
+                for idx, data in bad_data.items():
+                    messages.append(f"{idx}行目　{data}")
+                messages.append("CSVファイルのアップロードを中止しました。")
+
+            return render(
+                request, "webmemo/csv_upload.html", {"form": form, "messages": messages}
+            )
+    else:
+        # フォームを表示
+        form = CSVUploadForm()
+
+    return render(request, "webmemo/csv_upload.html", {"form": form})

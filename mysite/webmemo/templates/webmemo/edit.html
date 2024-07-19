@@ -11,6 +11,7 @@
     {% if update_msg %}
     <p>{{ update_msg }}</p><br>
     {% endif %}
+    <h1>メモ詳細</h1>
     <form action="{% url 'webmemo:edit' memo.id %}" method="post" onSubmit="return checkUpSubmit('変更')">
         {% csrf_token %}
         <input type="hidden" name="textId" value="{{ memo.id }}">

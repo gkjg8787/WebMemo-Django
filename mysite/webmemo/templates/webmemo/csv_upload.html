@@ -1,0 +1,34 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>CSVファイルアップロード</title>
+    <link rel="stylesheet" href="{% static 'webmemo/css/upload.css' %}" type="text/css">
+    <link rel="icon" href="{% static 'webmemo/icon/favicon.ico' %}">
+  </head>
+  <body>
+    <h1>CSVファイルアップロード</h1>
+    <div class="upload_summary">CSVファイルを選択してデータを登録します。</div>
+    <div class="upload_description">
+        フォーマットは<br><b>titleName, label, mainText, updated_at, created_at</b><br>
+        の順で記載してください。updated_atは無視されます。フォーマットが違う場合は登録されません。<br>
+        titleNameの前にidの列があっても構いません（無視されます）。
+    </div>
+    <div class="upload_form">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.csv_file.label }}: {{ form.csv_file }}<br>
+        <button type="submit">アップロード</button>
+    </form>
+    </div>
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <p><a href="{% url 'webmemo:index' %}">戻る</a></p>
+  </body>
+</html>
