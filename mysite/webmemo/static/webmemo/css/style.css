@@ -16,10 +16,8 @@ textarea {
 }
 textarea.maintext {
 	font-size: 16px;
-	min-width: 180px;
-	min-height: 120px;
-	max-width: 100%;
-	width : 80%;
+	width : 75%;
+	height:30vh;
 }
 
 td.noborder {
