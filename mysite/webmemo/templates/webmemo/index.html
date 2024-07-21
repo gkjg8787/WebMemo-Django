@@ -57,6 +57,7 @@
       <input type="button" value="一番下" onclick="gotoBottom()">
     </p>
     <h2>メモ一覧</h2>
+    <p>件数：{{ webmemo_list | length }}</p>
     <table class="memo_list">
         {% if webmemo_list %}
         <tr>
@@ -69,9 +70,9 @@
         {% for memo in webmemo_list %}
         <tr>
             <td class="id_frame">{{ memo.id }}</td>
-            <td class="title_frame">{{ memo.titleName }}</td>
-            <td class="label_frame">{{ memo.label }}</td>
-            <td class="text_frame">{{ memo.mainText }}</td>
+            <td class="title_frame">{{ memo.titleName | truncatechars:32 }}</td>
+            <td class="label_frame">{{ memo.label | truncatechars:32 }}</td>
+            <td class="text_frame">{{ memo.mainText | truncatechars:64 }}</td>
             <td class="update_frame">{{ memo.updated_at }}</td>
             <td class="noborder btn_frame">
                 <form action="{% url 'webmemo:edit' memo.id %}" method="get">

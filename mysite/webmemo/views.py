@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 from dataclasses import dataclass, asdict, field
 import csv
+import re
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
@@ -106,7 +107,7 @@ def sortMemoText(request, memolistcontext: MemoListContext) -> MemoListContext:
     if not "sort" in request.GET:
         return memolistcontext
     if not memolistcontext.webmemo_list:
-        memolistcontext.webmemo_list = MemoText.objects.all()
+        return memolistcontext
     match request.GET["sort"]:
         case "id":
             memolistcontext.sorttype.id = SELECTED
@@ -212,6 +213,27 @@ def csv_download(request):
     return response
 
 
+def csv_splitlines(value: str):
+    ptn = r'(".*?")|([^"\r\n]+)'
+    m = re.findall(ptn, value, re.DOTALL)
+    pre: str = ""
+    ret: list[str] = []
+    for t in m:
+        if t[1].count(",") >= 4:
+            ret.append(t[1])
+            pre = ""
+            continue
+        if len(t[0]) > 0:
+            pre = pre + t[0]
+            continue
+        if pre:
+            ret.append(pre + t[1])
+            pre = ""
+            continue
+        pre = t[1]
+    return ret
+
+
 def csv_upload(request):
     if request.method == "POST":
         # アップロードされたファイルを取得
@@ -220,7 +242,7 @@ def csv_upload(request):
         if form.is_valid():
             # CSVファイルの処理
             csv_file = request.FILES["csv_file"]
-            csv_reader = csv.reader(csv_file.read().decode().splitlines())
+            csv_reader = csv.reader(csv_splitlines(csv_file.read().decode()))
 
             # ヘッダー行を除外
             next(csv_reader)
