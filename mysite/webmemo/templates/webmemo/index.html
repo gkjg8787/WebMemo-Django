@@ -7,26 +7,14 @@
     <title>Webメモ</title>
     <link rel="stylesheet" href="{% static 'webmemo/css/style.css' %}" type="text/css">
     <link rel="icon" href="{% static 'webmemo/icon/favicon.ico' %}">
+    <script type="text/javascript" src="{% static 'webmemo/js/common.js' %}"></script>
   </head>
   <body>
-    <script>
-      function gotoTop(){
-        window.scroll({
-          top: 0,
-          behavior: "smooth",
-        });
-      }
-      function gotoBottom(){
-        var element = document.documentElement;
-        var bottom = element.scrollHeight - element.clientHeight;
-        window.scroll(0, bottom);
-      }
-    </script>
     <h1>WebMemo</h1>
     <h2>操作</h2>
     <p><form action="{% url 'webmemo:index' %}" method="post">
         {% csrf_token %}
-        <button type="submit" name="webmemo_act" value="add">メモ追加</button></button>
+        <button type="submit" name="webmemo_act" value="add">メモ追加</button>
     </form></p>
     <form action="{% url 'webmemo:csv_upload' %}" method="get">
       <input type="submit" value="ファイルで追加">
@@ -67,6 +55,7 @@
             <th>ラベル</th>
             <th>内容</th>
             <th>更新時刻</th>
+            <th></th>
         </tr>
         {% for memo in webmemo_list %}
         <tr>
